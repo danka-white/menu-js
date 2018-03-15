@@ -120,3 +120,11 @@ body{
 .nav-menu[data-overflowing='bottom'] .btn-scroll-down {
     display: block;
 }
+
+.menu{
+    transition: transform .2s ease-in-out;
+}
+
+.menu-no-transition{
+    transition: none;
+}

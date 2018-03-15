@@ -122,22 +122,26 @@ const data = {
 };
 
 var SETTINGS = {
-    navBarTravelling: false,
+    navBarMoving: false,
     navBarDirection: "",
-    navBarTravelDistance: 150
+    navBarMoveDistance: 50
 };
 
 var container = document.getElementById(data.elementId);
 Menu(container, data.menu);
 
+
 function showMenu() {
     document.getElementById("dropdownMenu").classList.toggle("show");
     var containerScroll = document.getElementById('navigation-container');
     var content = document.getElementById("menu");
-    // determineOverflow(content, containerScroll);
-    setOverflowingAttributes(content, containerScroll)
+
+    setOverflowingAttributes(content, containerScroll);
+    createScrollButtons(containerScroll);
+    makeClickableScrollButtons(content, containerScroll);
     changeScroll(content, containerScroll);
 }
+
 function setOverflowingAttributes(content, containerScroll) {
     containerScroll.setAttribute("data-overflowing", determineOverflow(content, containerScroll));
 }
@@ -146,8 +150,6 @@ function changeScroll(content, containerScroll) {
 
     var last_known_scroll_position = 0;
     var ticking = false;
-
-    createScrollButtons(containerScroll);
 
     containerScroll.addEventListener("scroll", function () {
         last_known_scroll_position = window.scrollY;
@@ -162,6 +164,79 @@ function changeScroll(content, containerScroll) {
 
 }
 
+function makeClickableScrollButtons(content, containerScroll){
+    var iconScrollUp = document.getElementById("iconScrollUp");
+    var iconScrollDown = document.getElementById("iconScrollDown");
+
+    iconScrollUp.addEventListener("click", function () {
+        if(SETTINGS.navBarMoving === true){
+            return;
+        }
+        if(determineOverflow(content, containerScroll) === "top" ||
+            determineOverflow(content, containerScroll) === "both"){
+
+            var availableScrollTop = containerScroll.scrollTop;
+
+            if (availableScrollTop < SETTINGS.navBarMoveDistance * 2) {
+                content.style.transform = "translateY(" + availableScrollTop + "px)";
+            } else {
+                content.style.transform = "translateY(" + SETTINGS.navBarMoveDistance + "px)";
+            }
+            content.classList.remove("menu-no-transition");
+
+            SETTINGS.navBarMoveDirection = "top";
+            SETTINGS.navBarMoving = true;
+        }
+        containerScroll.setAttribute("data-overflowing", determineOverflow(content, containerScroll));
+    });
+
+    iconScrollDown.addEventListener("click", function() {
+
+        if (SETTINGS.navBarMoving === true) {
+            return;
+        }
+        if (determineOverflow(content, containerScroll) === "bottom" ||
+            determineOverflow(content, containerScroll) === "both") {
+
+            var navBarBottomEdge = content.getBoundingClientRect().bottom;
+            var navBarScrollerBottomEdge = containerScroll.getBoundingClientRect().bottom;
+
+            var availableScrollBottom = Math.floor(navBarBottomEdge - navBarScrollerBottomEdge);
+
+            if (availableScrollBottom < SETTINGS.navBarMoveDistance * 2) {
+                content.style.transform = "translateY(-" + availableScrollBottom + "px)";
+            } else {
+                content.style.transform = "translateY(-" + SETTINGS.navBarMoveDistance + "px)";
+            }
+
+            content.classList.remove("menu-no-transition");
+            SETTINGS.navBarMoveDirection = "bottom";
+            SETTINGS.navBarMoving = true;
+        }
+        containerScroll.setAttribute("data-overflowing", determineOverflow(content, containerScroll));
+    });
+
+
+    content.addEventListener("transitionend", function() {
+
+            var styleOfTransform = window.getComputedStyle(content, null);
+            var tr = styleOfTransform.getPropertyValue("-webkit-transform") || styleOfTransform.getPropertyValue("transform");
+
+            var amount = Math.abs(parseInt(tr.split(",")[5]) || 0);
+            content.style.transform = "none";
+            content.classList.add("menu-no-transition");
+
+            if (SETTINGS.navBarMoveDirection === "top") {
+                containerScroll.scrollTop = containerScroll.scrollTop - amount;
+            } else {
+                containerScroll.scrollTop = containerScroll.scrollTop + amount;
+            }
+            SETTINGS.navBarMoving = false;
+        }, false);
+
+
+}
+
 function createScrollButtons(containerScroll) {
     if (document.getElementsByClassName('btn-scroll').length === 0) {
         var btnUp = document.createElement('btn');
@@ -171,8 +246,10 @@ function createScrollButtons(containerScroll) {
 
         var iconUp = document.createElement('i');
         iconUp.className = "fas fa-caret-up";
+        iconUp.id = "iconScrollUp";
         var iconDown = document.createElement('i');
         iconDown.className = "fas fa-caret-down";
+        iconDown.id = "iconScrollDown";
 
         containerScroll.appendChild(btnUp).appendChild(iconUp);
         containerScroll.appendChild(btnDown).appendChild(iconDown);
@@ -187,13 +264,6 @@ function determineOverflow(content, container) {
     var contentMetrics = content.getBoundingClientRect();
     var contentMetricsBottom = Math.floor(contentMetrics.bottom);
     var contentMetricsTop = Math.floor(contentMetrics.top);
-
-    /*    console.log("container metrics " + containerMetrics);
-     console.log("containerMetricsBottom " + containerMetricsBottom);
-     console.log("containerMetricsTop " + containerMetricsTop);
-     console.log("*******contentMetrics " + contentMetrics);
-     console.log("contentMetricsBottom " + contentMetricsBottom);
-     console.log("contentMetricsTop " + contentMetricsTop);*/
 
     if (containerMetricsTop > contentMetricsTop && containerMetricsBottom < contentMetricsBottom) {
         return "both";
