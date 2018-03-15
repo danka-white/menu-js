@@ -90,9 +90,33 @@ body{
 }
 
 #navigation-container.nav-menu{
-    overflow-y: auto;
     height: 350px;
+    overflow-y: auto;
 }
 ::-webkit-scrollbar{
     display: none;
+}
+
+.btn-scroll{
+    display: none;
+    position: absolute;
+}
+.btn-scroll-up{
+    top: 0;
+}
+.btn-scroll-down{
+    bottom: 0;
+}
+.btn-scroll .fas{
+    width: 100px;
+    color: #fff;
+    text-align: center;
+    background-color: rgba(164, 167, 169, 1);
+}
+
+.nav-menu[data-overflowing='top'] .btn-scroll-up,
+.nav-menu[data-overflowing='both'] .btn-scroll-up,
+.nav-menu[data-overflowing='both'] .btn-scroll-down,
+.nav-menu[data-overflowing='bottom'] .btn-scroll-down {
+    display: block;
 }

@@ -121,33 +121,39 @@ const data = {
     ]
 };
 
+var SETTINGS = {
+    navBarTravelling: false,
+    navBarDirection: "",
+    navBarTravelDistance: 150
+};
+
 var container = document.getElementById(data.elementId);
 Menu(container, data.menu);
 
 function showMenu() {
     document.getElementById("dropdownMenu").classList.toggle("show");
-    changeScroll();
+    var containerScroll = document.getElementById('navigation-container');
+    var content = document.getElementById("menu");
+    // determineOverflow(content, containerScroll);
+    setOverflowingAttributes(content, containerScroll)
+    changeScroll(content, containerScroll);
+}
+function setOverflowingAttributes(content, containerScroll) {
+    containerScroll.setAttribute("data-overflowing", determineOverflow(content, containerScroll));
 }
 
-function changeScroll() {
+function changeScroll(content, containerScroll) {
 
     var last_known_scroll_position = 0;
     var ticking = false;
 
-    var containerScroll = document.getElementById('navigation-container');
-    var content = document.getElementById("menu");
-
     createScrollButtons(containerScroll);
 
-    function doSomething(scroll_pos) {
-        containerScroll.setAttribute("data-overflowing", determineOverflow(content, containerScroll));
-    }
-
-    containerScroll.addEventListener("scroll", function() {
+    containerScroll.addEventListener("scroll", function () {
         last_known_scroll_position = window.scrollY;
         if (!ticking) {
-            window.requestAnimationFrame(function() {
-                doSomething(last_known_scroll_position);
+            window.requestAnimationFrame(function () {
+                setOverflowingAttributes(content, containerScroll);
                 ticking = false;
             });
         }
@@ -157,18 +163,20 @@ function changeScroll() {
 }
 
 function createScrollButtons(containerScroll) {
-    var btnUp = document.createElement('btn');
-    btnUp.classList.add("btn-scroll", "btn-scroll-up");
-    var btnDown = document.createElement('btn');
-    btnDown.classList.add("btn-scroll", "btn-scroll-down");
+    if (document.getElementsByClassName('btn-scroll').length === 0) {
+        var btnUp = document.createElement('btn');
+        btnUp.classList.add("btn-scroll", "btn-scroll-up");
+        var btnDown = document.createElement('btn');
+        btnDown.classList.add("btn-scroll", "btn-scroll-down");
 
-    var iconUp = document.createElement('i');
-    iconUp.className = "fas fa-caret-up";
-    var iconDown = document.createElement('i');
-    iconDown.className = "fas fa-caret-down";
+        var iconUp = document.createElement('i');
+        iconUp.className = "fas fa-caret-up";
+        var iconDown = document.createElement('i');
+        iconDown.className = "fas fa-caret-down";
 
-    containerScroll.appendChild(btnUp).appendChild(iconUp);
-    containerScroll.appendChild(btnDown).appendChild(iconDown);
+        containerScroll.appendChild(btnUp).appendChild(iconUp);
+        containerScroll.appendChild(btnDown).appendChild(iconDown);
+    }
 }
 
 function determineOverflow(content, container) {
@@ -180,17 +188,16 @@ function determineOverflow(content, container) {
     var contentMetricsBottom = Math.floor(contentMetrics.bottom);
     var contentMetricsTop = Math.floor(contentMetrics.top);
 
-    console.log("container metrics " + containerMetrics);
-    console.log("containerMetricsBottom " + containerMetricsBottom);
-    console.log("containerMetricsTop " + containerMetricsTop);
-    console.log("*******contentMetrics " + contentMetrics);
-    console.log("contentMetricsBottom " + contentMetricsBottom);
-    console.log("contentMetricsTop " + contentMetricsTop);
-
+    /*    console.log("container metrics " + containerMetrics);
+     console.log("containerMetricsBottom " + containerMetricsBottom);
+     console.log("containerMetricsTop " + containerMetricsTop);
+     console.log("*******contentMetrics " + contentMetrics);
+     console.log("contentMetricsBottom " + contentMetricsBottom);
+     console.log("contentMetricsTop " + contentMetricsTop);*/
 
     if (containerMetricsTop > contentMetricsTop && containerMetricsBottom < contentMetricsBottom) {
         return "both";
-    } else if (contentMetricsTop< containerMetricsTop) {
+    } else if (contentMetricsTop < containerMetricsTop) {
         return "top";
     } else if (contentMetricsBottom > containerMetricsBottom) {
         return "bottom";
@@ -199,8 +206,8 @@ function determineOverflow(content, container) {
     }
 }
 
-window.onclick = function(event) {
-    if (!event.target.matches('.dropbtn')) {
+window.onclick = function (event) {
+    if (!event.target.matches('.dropbtn') && !event.target.matches('.btn-scroll .fas')) {
 
         var dropdowns = document.getElementsByClassName("dropdown-content");
         for (var i = 0; i < dropdowns.length; i++) {
@@ -212,7 +219,7 @@ window.onclick = function(event) {
     }
 };
 
-function Menu(container,items){
+function Menu(container, items) {
 
     var nav = document.createElement('nav');
     nav.className = "nav-menu";
@@ -223,17 +230,17 @@ function Menu(container,items){
 
     container.appendChild(nav).appendChild(ul);
 
-    for(var i = 0; i<items.length; i++){
-        if(items[i].disabled !== true ){
+    for (var i = 0; i < items.length; i++) {
+        if (items[i].disabled !== true) {
 
             var li = document.createElement('li');
-            var a  = document.createElement('a');
+            var a = document.createElement('a');
             a.setAttribute('href', '#');
             ul.appendChild(li).appendChild(a);
             a.innerText = items[i].title;
 
-            if(items[i].subitems.length !== 0){
-                var  iconFontAwesome = document.createElement('i');
+            if (items[i].subitems.length !== 0) {
+                var iconFontAwesome = document.createElement('i');
                 iconFontAwesome.className = "fas fa-angle-right";
                 a.appendChild(iconFontAwesome);
 
@@ -242,8 +249,8 @@ function Menu(container,items){
 
                 li.appendChild(ulSubItems);
 
-                for(var j = 0; j<items[i].subitems.length; j++) {
-                    if(items[i].subitems[j].disabled !== true ) {
+                for (var j = 0; j < items[i].subitems.length; j++) {
+                    if (items[i].subitems[j].disabled !== true) {
                         var liSubItem = document.createElement('li');
                         var aSub = document.createElement('a');
                         aSub.setAttribute('href', '#');
