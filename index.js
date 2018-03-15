@@ -126,25 +126,77 @@ Menu(container, data.menu);
 
 function showMenu() {
     document.getElementById("dropdownMenu").classList.toggle("show");
-    scroller();
+    changeScroll();
 }
-function scroller() {
-    var elementWithContent = document.getElementById("menu");
-    var scrollHeight = elementWithContent.scrollHeight;
-    var clientHeight = elementWithContent.clientHeight;
 
-    if(scrollHeight > clientHeight){
+function changeScroll() {
 
-        var divScrollContainer = document.createElement('div');
-        divScrollContainer.className = "scroll-container";
-        elementWithContent.appendChild(divScrollContainer);
+    var last_known_scroll_position = 0;
+    var ticking = false;
 
-        var iconScroll = document.createElement('i');
-        iconScroll.className = "fas fa-caret-down";
-        divScrollContainer.appendChild(iconScroll);
+    var containerScroll = document.getElementById('navigation-container');
+    var content = document.getElementById("menu");
 
+    createScrollButtons(containerScroll);
+
+    function doSomething(scroll_pos) {
+        containerScroll.setAttribute("data-overflowing", determineOverflow(content, containerScroll));
     }
 
+    containerScroll.addEventListener("scroll", function() {
+        last_known_scroll_position = window.scrollY;
+        if (!ticking) {
+            window.requestAnimationFrame(function() {
+                doSomething(last_known_scroll_position);
+                ticking = false;
+            });
+        }
+        ticking = true;
+    });
+
+}
+
+function createScrollButtons(containerScroll) {
+    var btnUp = document.createElement('btn');
+    btnUp.classList.add("btn-scroll", "btn-scroll-up");
+    var btnDown = document.createElement('btn');
+    btnDown.classList.add("btn-scroll", "btn-scroll-down");
+
+    var iconUp = document.createElement('i');
+    iconUp.className = "fas fa-caret-up";
+    var iconDown = document.createElement('i');
+    iconDown.className = "fas fa-caret-down";
+
+    containerScroll.appendChild(btnUp).appendChild(iconUp);
+    containerScroll.appendChild(btnDown).appendChild(iconDown);
+}
+
+function determineOverflow(content, container) {
+    var containerMetrics = container.getBoundingClientRect();
+    var containerMetricsBottom = Math.floor(containerMetrics.bottom);
+    var containerMetricsTop = Math.floor(containerMetrics.top);
+
+    var contentMetrics = content.getBoundingClientRect();
+    var contentMetricsBottom = Math.floor(contentMetrics.bottom);
+    var contentMetricsTop = Math.floor(contentMetrics.top);
+
+    console.log("container metrics " + containerMetrics);
+    console.log("containerMetricsBottom " + containerMetricsBottom);
+    console.log("containerMetricsTop " + containerMetricsTop);
+    console.log("*******contentMetrics " + contentMetrics);
+    console.log("contentMetricsBottom " + contentMetricsBottom);
+    console.log("contentMetricsTop " + contentMetricsTop);
+
+
+    if (containerMetricsTop > contentMetricsTop && containerMetricsBottom < contentMetricsBottom) {
+        return "both";
+    } else if (contentMetricsTop< containerMetricsTop) {
+        return "top";
+    } else if (contentMetricsBottom > containerMetricsBottom) {
+        return "bottom";
+    } else {
+        return "none";
+    }
 }
 
 window.onclick = function(event) {
@@ -163,6 +215,8 @@ window.onclick = function(event) {
 function Menu(container,items){
 
     var nav = document.createElement('nav');
+    nav.className = "nav-menu";
+    nav.id = "navigation-container";
     var ul = document.createElement('ul');
     ul.id = "menu";
     ul.className = "menu";

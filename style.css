@@ -12,7 +12,6 @@ body{
 .menu a{
     font-family: Verdana,sans-serif;
     line-height: 1.5;
-    /*    color: rgba(74, 74, 74, 0.8);*/
     font-size: 14px;
 }
 .menu li{
@@ -63,10 +62,6 @@ body{
     display:block;
 }
 
-.menu{
-    height: 350px;
-    overflow-y: auto;
-}
 .menu li{
     position: relative;
 }
@@ -92,4 +87,12 @@ body{
 
 .scroll-container .fa .fa-caret-down{
     color: #000;
+}
+
+#navigation-container.nav-menu{
+    overflow-y: auto;
+    height: 350px;
+}
+::-webkit-scrollbar{
+    display: none;
 }
