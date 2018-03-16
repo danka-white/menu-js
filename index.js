@@ -147,7 +147,7 @@ function setOverflowingAttributes(content, containerScroll) {
 }
 
 function changeScroll(content, containerScroll) {
-
+    containerScroll.onwheel = function(){ return false; }
     var last_known_scroll_position = 0;
     var ticking = false;
 
@@ -314,10 +314,12 @@ function Menu(container, items) {
                 iconFontAwesome.className = "fas fa-angle-right";
                 a.appendChild(iconFontAwesome);
 
+                var wrapperSubMenu = document.createElement('div');
+                wrapperSubMenu.className = "wrapper-sub-menu";
                 var ulSubItems = document.createElement('ul');
                 ulSubItems.className = "sub-menu";
 
-                li.appendChild(ulSubItems);
+                li.appendChild(wrapperSubMenu).appendChild(ulSubItems);
 
                 for (var j = 0; j < items[i].subitems.length; j++) {
                     if (items[i].subitems[j].disabled !== true) {
@@ -334,4 +336,3 @@ function Menu(container, items) {
     }
 
 }
-

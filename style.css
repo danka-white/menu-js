@@ -43,7 +43,7 @@ body{
 
 .dropdown-content {
     display: none;
-    position: absolute;
+    position: relative;
     background-color: #f1f1f1;
     min-width: 100px;
     box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
@@ -69,7 +69,7 @@ body{
     display: none;
     position: absolute;
     left: 100px;
-    top: 0px;
+    top: -45px;
     background-color: #f1f1f1;
     box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.1);
     min-width: 100px;
@@ -82,7 +82,6 @@ body{
 }
 .scroll-container{
     background-color: lightgrey;
-    /*position: ;*/
 }
 
 .scroll-container .fa .fa-caret-down{
@@ -100,18 +99,22 @@ body{
 .btn-scroll{
     display: none;
     position: absolute;
+    width: 100px;
+    height: 8px;
+    background-color: rgba(164, 167, 169, 1);
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.1);
 }
 .btn-scroll-up{
-    top: 0;
+    top: -8px;
 }
 .btn-scroll-down{
-    bottom: 0;
+    bottom: -8px;
 }
 .btn-scroll .fas{
-    width: 100px;
     color: #fff;
+    display: block;
     text-align: center;
-    background-color: rgba(164, 167, 169, 1);
+    font-size: 8px;
 }
 
 .nav-menu[data-overflowing='top'] .btn-scroll-up,
@@ -127,4 +130,13 @@ body{
 
 .menu-no-transition{
     transition: none;
+}
+
+.menu li{
+    position: static;
+}
+
+.wrapper-sub-menu {
+    position: absolute;
+    z-index: 10;
 }
