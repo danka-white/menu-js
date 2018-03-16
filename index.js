@@ -15,23 +15,6 @@ const data = {
                             "title": "item 1.1.1",
                             "handler": "",
                             "disabled": false
-                        },
-                        {
-                            "title": "item 1.1.2",
-                            "handler": "",
-                            "disabled": false,
-                            "subitems": [
-                                {
-                                    "title": "item 1.1.1.1",
-                                    "handler": "",
-                                    "disabled": false
-                                },
-                                {
-                                    "title": "item 1.1.1.2",
-                                    "handler": "",
-                                    "disabled": false
-                                }
-                            ]
                         }
                     ]
                 },
