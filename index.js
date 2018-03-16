@@ -128,7 +128,7 @@ var SETTINGS = {
 };
 
 var container = document.getElementById(data.elementId);
-Menu(container, data.menu);
+// Menu(container, data.menu);
 
 
 function showMenu() {
