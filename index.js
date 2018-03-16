@@ -1,3 +1,4 @@
+// config options
 const data = {
     "elementId": "dropdownMenu",
     "menu": [
@@ -129,16 +130,33 @@ const data = {
     ]
 };
 
+//options to transition
 var SETTINGS = {
     navBarMoving: false,
     navBarDirection: "",
     navBarMoveDistance: 50
 };
-
+//building DOM-elements
 createMenu();
 
+//click another place except menu make it close
+window.onclick = function (event) {
+    if (!event.target.matches('.dropbtn') && !event.target.matches('.btn-scroll .fas')) {
+
+        var dropdowns = document.getElementsByClassName("dropdown-content");
+        for (var i = 0; i < dropdowns.length; i++) {
+            var openDropdown = dropdowns[i];
+            if (openDropdown.classList.contains('show')) {
+                openDropdown.classList.remove('show');
+            }
+        }
+    }
+};
+
+// menu appear near the cursor when left button clicked
 function showMenu() {
     document.getElementById("dropdownMenu").classList.toggle("show");
+    //custom scroll
     var containerScroll = document.getElementById('navigation-container');
     var content = document.getElementById("menu");
 
@@ -281,19 +299,6 @@ function determineOverflow(content, container) {
         return "none";
     }
 }
-
-window.onclick = function (event) {
-    if (!event.target.matches('.dropbtn') && !event.target.matches('.btn-scroll .fas')) {
-
-        var dropdowns = document.getElementsByClassName("dropdown-content");
-        for (var i = 0; i < dropdowns.length; i++) {
-            var openDropdown = dropdowns[i];
-            if (openDropdown.classList.contains('show')) {
-                openDropdown.classList.remove('show');
-            }
-        }
-    }
-};
 
 function createMenu() {
     var nav = document.createElement('nav');
